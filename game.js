@@ -5,9 +5,7 @@ var userPattern = [];
 var started = false;
 var level = 0;
 
-console.log(window.matchMedia("(min-width: 900px)").matches)
 if(window.matchMedia("(min-width: 900px)").matches === true) {
-    console.log("900 is working")
     $(document).keypress(function(){
         if(!started) {
             $("#level-title").text('level - ' + level);
@@ -19,13 +17,11 @@ if(window.matchMedia("(min-width: 900px)").matches === true) {
         userPattern.push($(this).attr('id'));
         playSound($(this).attr('id'));
         animatePress($(this).attr('id'));
-        
         answerCheck(userPattern.length-1);
     });
 }
 else if(window.matchMedia("(max-width: 899px)").matches === true){
-    document.getElementById("level-title").innerText = 'Click to start';
-    console.log("899 is working ")
+    $('#level-title').text("Click to start")
     $(document).on('mousedown', function(){
         if(!started) {
             $("#level-title").text('level - ' + level);
@@ -36,16 +32,13 @@ else if(window.matchMedia("(max-width: 899px)").matches === true){
     $('.btn').click(function() {
         userPattern.push($(this).attr('id'));
         playSound($(this).attr('id'));
-        animatePress($(this).attr('id'));
-        
+        animatePress($(this).attr('id'));    
         answerCheck(userPattern.length-1);
     });
 }
-
-
-
+//=============================
 // ALL FUNCTIONS 
-
+//=============================
 // NEXT SEQUENCE 
 
 function nextSequence() {
@@ -53,9 +46,25 @@ function nextSequence() {
     level++;
     let randomNumber = Math.floor(Math.random() * 4);
     var randomColor = buttonColor[randomNumber];
+
+    if(gamePattern.length === 0) {
+        $(`#${randomColor}`).fadeOut().fadeIn();
+        playSound(randomColor);
+    } else if(gamePattern.length > 0) {
+        let e = document.body;
+        $(e).css('background', '#5e5d5d');
+        setTimeout(function() {
+            $(e).css('background', "");
+        }, 4);
+        for( let i = 0; i < gamePattern.length + 1; i++) {
+            setTimeout(function(){
+                $(`#${gamePattern[i]}`).fadeOut().fadeIn();
+                playSound(gamePattern[i]);
+            }, 1000 * i)
+        }
+    }
     gamePattern.push(randomColor);
-    $(`#${randomColor}`).fadeOut().fadeIn();
-    playSound(randomColor);
+    
 }
 
 // PLAY SOUND 
@@ -101,7 +110,7 @@ function answerCheck(currentLevel) {
             $("#level-title").text('level - ' + level);
             setTimeout(function(){
                 nextSequence();
-            }, 700);
+            }, 1000);
         }
     } else {
         
@@ -137,4 +146,3 @@ function answerCheck(currentLevel) {
 overText = () => {
     $("#level-title").text("Game Over, click to Play Again");
 }
-
